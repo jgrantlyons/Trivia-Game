@@ -3,25 +3,34 @@ $(document).ready(function () {
     let allQuestions = [
         bestMovie = {
             question: "Which was the best movie of the entire Trilogy?",
-            options: ["The Fellowship of the Ring", "The Two Towers", "The Return of the King"],
-            answer: "The Return of the King",
+            options: ["The Fellowship of the Ring", "The Two Towers", "The Return of the King", "Impossible to compare"],
+            answer: "Impossible to compare",
         },
+        richterScale = {
+            question: "What's hard as stone, and as light as a feather?",
+            options: ["Plantirs", "Mithril", "Pippin's head", "The One Ring"],
+            answer: "Mithril",
+        }
+
+
     ];
 
 
-    let counter = 10
+    let counter = 10;
+    let spotcheck = 0;
+    let wins = 0;
+    let losses = 0;
+    questionCount = 0;
+
 
     function timer() {
-
+        clearInterval(interval);
         var interval = setInterval(function () {
             counter--;
             jQuery("#number").html("Time remaining: " + counter);
-            if (counter == 0) {
+            if (counter <= 0) {
                 //Do something
-                $("#mainFrame").html("Time's up! Click here for next Question");
-
-                // Stop the counter
-                clearInterval(interval);
+                $("#number").html("Time's up! Click here for next Question");
             }
         }, 1000);
 
@@ -30,13 +39,35 @@ $(document).ready(function () {
 
 
     function start() {
-        for (let i = 0; i < allQuestions.length; i++) {
+        
+        for (let i = questionCount; i < allQuestions.length; i++) {
             counter = 10;
-            jQuery("#number").html("Time remaining: " + counter);
+
+            timer();
+            $("#number").html("Time remaining: " + counter);
+            $("#score").html("guessed right: " + wins + "<br>guessed wrong: " + losses);
             $("#mainFrame").text(allQuestions[i].question)
-        for (let j = 0; j < allQuestions[i].options.length; j++) {
-            $("#mainFrame").append("<div>" + allQuestions[i].options[j] + "</div>")
-        }
+            for (let j = 0; j < allQuestions[i].options.length; j++) {
+                $("#mainFrame").append("<div class=choice id=" + spotcheck + ">" + allQuestions[i].options[j] + "</div>")
+                
+            }
+            $(".choice").on("click", function () {
+
+                if (this.innerText == allQuestions[i].answer) {
+                    $("#mainFrame").text("correct!")
+                    wins++;
+                    $("#score").html("guessed right: " + wins + "<br>guessed wrong: " + losses);
+                    questionCount++;
+                    $("#mainFrame").append("<div class=choice id=" + spotcheck + ">" + allQuestions[i].options[j] + "</div>");
+
+                }
+                else {
+                    losses++;
+                    $("#score").html("guessed right: " + wins + "<br>guessed wrong: " + losses);
+                    questionCount++;
+                    $("#mainFrame").append("<div class=choice id=" + spotcheck + ">" + allQuestions[i].options[j] + "</div>")
+                }
+            })
 
 
         }
